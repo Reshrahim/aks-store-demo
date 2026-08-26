@@ -28,6 +28,15 @@ resource mongoDb 'Radius.Data/mongoDatabases@2025-08-01-preview' = {
   }
 }
 
+resource redisCache 'Radius.Data/redisCaches@2025-08-01-preview' = {
+  name: 'redis'
+  properties: {
+    environment: environment
+    application: storeApp.id
+    size: 'S'
+  }
+}
+
 resource rabbitmqSecret 'Radius.Security/secrets@2025-08-01-preview' = {
   name: 'rabbitmq-credentials'
   properties: {
@@ -302,6 +311,11 @@ resource productContainer 'Radius.Compute/containers@2025-08-01-preview' = {
             containerPort: 3002
           }
         }
+      }
+    }
+    connections: {
+      rediscache: {
+        source: redisCache.id
       }
     }
   }
